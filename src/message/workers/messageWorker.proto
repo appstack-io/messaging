@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+message MessageJobPayload {
+  string id = 1;
+}

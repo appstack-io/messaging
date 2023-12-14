@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+message ConversationParticipant {
+  string id = 1;
+  uint64 createdAt = 2;
+  uint64 updatedAt = 3;
+  string conversationId = 4;
+  string participantId = 5;
+  AuthorizableAs writeableAs = 6;
+}
+
+message ConversationParticipantCreateOneInput {
+  string conversationId = 4;
+  string participantId = 5;
+}
+
+message ConversationParticipantFindOneInput {
+  string id = 1;
+}
+
+message ConversationParticipantRemoveOneInput {
+  string id = 1;
+}
+
+message ConversationParticipantFindByConversationFilter {
+  string conversationId = 1;
+}
+
+message ConversationParticipantFindByConversationOpts {
+  uint64 limit = 1;
+  uint64 offset = 2;
+}
+
+message ConversationParticipantFindByConversationInput {
+  ConversationParticipantFindByConversationFilter filter = 1;
+  ConversationParticipantFindByConversationOpts opts = 2;
+}
+
+message ConversationParticipantFindByConversationResultMeta {
+  uint64 offset = 1;
+}
+
+message ConversationParticipantFindByConversationResult {
+  ConversationParticipantFindByConversationResultMeta meta = 1;
+  repeated ConversationParticipant results = 2;
+}
+
+service ConversationParticipantService {
+  rpc CreateOne (ConversationParticipantCreateOneInput) returns (ConversationParticipant) {}
+  rpc FindOne (ConversationParticipantFindOneInput) returns (ConversationParticipant) {}
+  rpc RemoveOne (ConversationParticipantRemoveOneInput) returns (ConversationParticipant) {}
+  rpc FindByConversation (ConversationParticipantFindByConversationInput) returns (ConversationParticipantFindByConversationResult) {}
+}

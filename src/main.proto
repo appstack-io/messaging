@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package main;
+
+message AuthorizableAs {
+  string entity = 1;
+  string entityId = 2;
+}

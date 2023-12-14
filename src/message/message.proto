@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+message Message {
+    string id = 1;
+    uint64 createdAt = 2;
+    uint64 updatedAt = 3;
+    string conversationId = 4;
+    MessageMedia media = 5;
+    string senderId = 6;
+    repeated string sentToIds = 7;
+    repeated string receivedByIds = 8;
+    repeated string seenByIds = 9;
+    bool deleted = 10;
+    string uniqueness = 11;
+}
+
+message MessageMedia {
+    string text = 1;
+}
+
+message MessageCreateOneInput {
+    string conversationId = 4;
+    MessageMedia media = 5;
+    string senderId = 6;
+    string uniqueness = 11;
+}
+
+message MessageUpdateOneInput {
+    string id = 1;
+    MessageMedia media = 5;
+}
+
+message MessageFindOneInput {
+    string id = 1;
+}
+
+message MessageFindUniqueInput {
+    string uniqueness = 1;
+}
+
+message MessageRemoveOneInput {
+    string id = 1;
+}
+
+message MessageFindByConversationFilter {
+    string conversationId = 1;
+}
+
+message MessageFindByConversationOpts {
+    uint64 limit = 1;
+    uint64 offset = 2;
+}
+
+message MessageFindByConversationInput {
+    MessageFindByConversationFilter filter = 1;
+    MessageFindByConversationOpts opts = 2;
+}
+
+message MessageFindByConversationResultMeta {
+    uint64 offset = 1;
+}
+
+message MessageFindByConversationResult {
+    MessageFindByConversationResultMeta meta = 1;
+    repeated Message results = 2;
+}
+
+
+service MessageService {
+    rpc CreateOne (MessageCreateOneInput) returns (Message) {}
+    rpc UpdateOne (MessageUpdateOneInput) returns (Message) {}
+    rpc FindOne (MessageFindOneInput) returns (Message) {}
+    rpc FindUnique (MessageFindUniqueInput) returns (Message) {}
+    rpc RemoveOne (MessageRemoveOneInput) returns (Message) {}
+    rpc FindByConversation (MessageFindByConversationInput) returns (MessageFindByConversationResult) {}
+}
