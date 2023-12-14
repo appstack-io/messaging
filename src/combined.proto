@@ -1,0 +1,200 @@
+syntax = "proto3";
+
+package main;
+
+message Conversation {
+  string id = 1;
+  uint64 createdAt = 2;
+  uint64 updatedAt = 3;
+  string name = 4;
+  string description = 5;
+  uint64 lastMessageAt = 6;
+}
+
+message ConversationCreateOneInput {
+  string name = 4;
+  string description = 5;
+}
+
+message ConversationUpdateOneInput {
+  string id = 1;
+  string name = 4;
+  string description = 5;
+  uint64 lastMessageAt = 6;
+}
+
+message ConversationFindOneInput {
+  string id = 1;
+}
+
+message ConversationRemoveOneInput {
+  string id = 1;
+}
+
+message ConversationFindByParticipantFilter {
+  string participantId = 1;
+  uint64 fromLastMessageAt = 2;
+}
+
+message ConversationFindByParticipantOpts {
+  uint64 limit = 1;
+  uint64 offset = 2;
+}
+
+message ConversationFindByParticipantInput {
+  ConversationFindByParticipantFilter filter = 1;
+  ConversationFindByParticipantOpts opts = 2;
+}
+
+message ConversationFindByParticipantResultMeta {
+  uint64 offset = 1;
+}
+
+message ConversationFindByParticipantResult {
+  ConversationFindByParticipantResultMeta meta = 1;
+  repeated Conversation results = 2;
+}
+
+message ConversationParticipant {
+  string id = 1;
+  uint64 createdAt = 2;
+  uint64 updatedAt = 3;
+  string conversationId = 4;
+  string participantId = 5;
+  AuthorizableAs writeableAs = 6;
+}
+
+message ConversationParticipantCreateOneInput {
+  string conversationId = 4;
+  string participantId = 5;
+}
+
+message ConversationParticipantFindOneInput {
+  string id = 1;
+}
+
+message ConversationParticipantRemoveOneInput {
+  string id = 1;
+}
+
+message ConversationParticipantFindByConversationFilter {
+  string conversationId = 1;
+}
+
+message ConversationParticipantFindByConversationOpts {
+  uint64 limit = 1;
+  uint64 offset = 2;
+}
+
+message ConversationParticipantFindByConversationInput {
+  ConversationParticipantFindByConversationFilter filter = 1;
+  ConversationParticipantFindByConversationOpts opts = 2;
+}
+
+message ConversationParticipantFindByConversationResultMeta {
+  uint64 offset = 1;
+}
+
+message ConversationParticipantFindByConversationResult {
+  ConversationParticipantFindByConversationResultMeta meta = 1;
+  repeated ConversationParticipant results = 2;
+}
+
+message AuthorizableAs {
+  string entity = 1;
+  string entityId = 2;
+}
+
+message Message {
+    string id = 1;
+    uint64 createdAt = 2;
+    uint64 updatedAt = 3;
+    string conversationId = 4;
+    MessageMedia media = 5;
+    string senderId = 6;
+    repeated string sentToIds = 7;
+    repeated string receivedByIds = 8;
+    repeated string seenByIds = 9;
+    bool deleted = 10;
+    string uniqueness = 11;
+}
+
+message MessageMedia {
+    string text = 1;
+}
+
+message MessageCreateOneInput {
+    string conversationId = 4;
+    MessageMedia media = 5;
+    string senderId = 6;
+    string uniqueness = 11;
+}
+
+message MessageUpdateOneInput {
+    string id = 1;
+    MessageMedia media = 5;
+}
+
+message MessageFindOneInput {
+    string id = 1;
+}
+
+message MessageFindUniqueInput {
+    string uniqueness = 1;
+}
+
+message MessageRemoveOneInput {
+    string id = 1;
+}
+
+message MessageFindByConversationFilter {
+    string conversationId = 1;
+}
+
+message MessageFindByConversationOpts {
+    uint64 limit = 1;
+    uint64 offset = 2;
+}
+
+message MessageFindByConversationInput {
+    MessageFindByConversationFilter filter = 1;
+    MessageFindByConversationOpts opts = 2;
+}
+
+message MessageFindByConversationResultMeta {
+    uint64 offset = 1;
+}
+
+message MessageFindByConversationResult {
+    MessageFindByConversationResultMeta meta = 1;
+    repeated Message results = 2;
+}
+
+message MessageJobPayload {
+  string id = 1;
+}
+
+service ConversationService {
+  rpc CreateOne (ConversationCreateOneInput) returns (Conversation) {}
+  rpc UpdateOne (ConversationUpdateOneInput) returns (Conversation) {}
+  rpc FindOne (ConversationFindOneInput) returns (Conversation) {}
+  rpc RemoveOne (ConversationRemoveOneInput) returns (Conversation) {}
+  rpc FindByParticipant (ConversationFindByParticipantInput) returns (ConversationFindByParticipantResult) {}
+}
+
+service ConversationParticipantService {
+  rpc CreateOne (ConversationParticipantCreateOneInput) returns (ConversationParticipant) {}
+  rpc FindOne (ConversationParticipantFindOneInput) returns (ConversationParticipant) {}
+  rpc RemoveOne (ConversationParticipantRemoveOneInput) returns (ConversationParticipant) {}
+  rpc FindByConversation (ConversationParticipantFindByConversationInput) returns (ConversationParticipantFindByConversationResult) {}
+}
+
+service MessageService {
+    rpc CreateOne (MessageCreateOneInput) returns (Message) {}
+    rpc UpdateOne (MessageUpdateOneInput) returns (Message) {}
+    rpc FindOne (MessageFindOneInput) returns (Message) {}
+    rpc FindUnique (MessageFindUniqueInput) returns (Message) {}
+    rpc RemoveOne (MessageRemoveOneInput) returns (Message) {}
+    rpc FindByConversation (MessageFindByConversationInput) returns (MessageFindByConversationResult) {}
+}
+

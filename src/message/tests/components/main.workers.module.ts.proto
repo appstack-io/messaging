@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/empty.proto";
+package main;
+
+message PublishJobInput {
+  string sender = 1000;
+}
+
+message PublishJobResult {
+  string jobId = 1;
+}
+
+message WorkersHealthCheckResult {
+  bool ok = 1;
+}
+
+message MessageJobPayload {
+  string id = 1;
+}
+
+service WorkersService {
+  rpc PublishJob (PublishJobInput) returns (PublishJobResult) {}
+  rpc HealthCheck (google.protobuf.Empty) returns (WorkersHealthCheckResult) {}
+}
+
