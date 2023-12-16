@@ -4,7 +4,11 @@ import { MessageModule } from './message/message.module';
 import { ConversationModule } from './conversation/conversation.module';
 import { ConversationParticipantModule } from './conversationParticipant/conversationParticipant.module';
 import { MessageWorkerModule } from './message/workers/messageWorker.module';
-import { IntegrityWarningWorkerService } from '@appstack-io/integrity';
+import {
+  IntegrityWarningWorkerService,
+  IntegrityWorkerModule,
+  RemoveTempsWorkerService,
+} from '@appstack-io/integrity';
 import { ConversationLogic } from './conversation/conversation.logic';
 
 @Module({
@@ -14,17 +18,22 @@ import { ConversationLogic } from './conversation/conversation.logic';
     ConversationParticipantModule,
     ArangodbModule,
     MessageWorkerModule,
+    IntegrityWorkerModule,
   ],
 })
 export class MessagingWorkersModule implements OnModuleInit {
   constructor(
     private integrity: IntegrityWarningWorkerService,
+    private removeTemps: RemoveTempsWorkerService,
     private conversationLogic: ConversationLogic,
   ) {}
 
   async onModuleInit() {
-    await this.integrity.init('conversation', async (id: string) => {
-      await this.conversationLogic.updateOne({ id });
-    });
+    await Promise.all([
+      this.integrity.init('conversation', async (id: string) => {
+        await this.conversationLogic.updateOne({ id });
+      }),
+      this.removeTemps.init('conversation'),
+    ]);
   }
 }
