@@ -1,2 +1,2 @@
 export * from './messaging.services.module';
-export * from './message/workers/messageWorker.module';
+export * from './messaging.workers.module';
