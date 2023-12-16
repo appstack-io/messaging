@@ -9,34 +9,26 @@ import {
   MessageUpdateOneInput,
 } from '../combined.interfaces';
 import { MessageService } from './message.service';
-import {
-  ClientService,
-  ConversationServiceClient,
-  ConversationServiceDefinition,
-} from '@appstack-io/client';
 import { MqService } from '@appstack-io/mq';
+import { ConversationService } from '../conversation/conversation.service';
 
 @Injectable()
 export class MessageLogic {
-  private conversationServiceClient: ConversationServiceClient;
-
   constructor(
     private service: MessageService,
-    private clientService: ClientService,
     private mq: MqService,
-  ) {
-    this.conversationServiceClient =
-      this.clientService.getServiceInternalClient<ConversationServiceClient>(
-        ConversationServiceDefinition,
-      );
-  }
+    private conversationService: ConversationService,
+  ) {}
 
   async createOne(input: MessageCreateOneInput): Promise<Message> {
-    const conversation = await this.conversationServiceClient.findOne({
+    const conversation = await this.conversationService.findOne({
       id: input.conversationId,
     });
+    if (!conversation) {
+      throw new Error(`conversation ${input.conversationId} not found`);
+    }
     const created = await this.service.createOne(input);
-    await this.conversationServiceClient.updateOne({
+    await this.conversationService.updateOne({
       id: conversation.id,
       lastMessageAt: created.createdAt,
     });
@@ -57,10 +49,13 @@ export class MessageLogic {
 
   async updateOne(input: MessageUpdateOneInput): Promise<Message> {
     const updated = await this.service.updateOne(input);
-    const conversation = await this.conversationServiceClient.findOne({
+    const conversation = await this.conversationService.findOne({
       id: updated.conversationId,
     });
-    await this.conversationServiceClient.updateOne({
+    if (!conversation) {
+      throw new Error(`conversation ${updated.conversationId} not found`);
+    }
+    await this.conversationService.updateOne({
       id: conversation.id,
       lastMessageAt: updated.updatedAt,
     });

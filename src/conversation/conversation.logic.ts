@@ -23,7 +23,9 @@ export class ConversationLogic {
     return await this.service.findOne(input);
   }
 
-  async updateOne(input: ConversationUpdateOneInput): Promise<Conversation> {
+  async updateOne(
+    input: Partial<ConversationUpdateOneInput>,
+  ): Promise<Conversation> {
     return await this.service.updateOne(input);
   }
 

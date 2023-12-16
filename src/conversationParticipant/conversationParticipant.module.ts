@@ -3,12 +3,13 @@ import { ConversationParticipantController } from './conversationParticipant.con
 import { ConversationParticipantService } from './conversationParticipant.service';
 import { ConversationParticipantLogic } from './conversationParticipant.logic';
 import { LimitsModule } from '@appstack-io/limits';
+import { PermissionModule } from '@appstack-io/permissions';
 
 @Global()
 @Module({
-  imports: [LimitsModule],
+  imports: [LimitsModule, PermissionModule],
   controllers: [ConversationParticipantController],
   providers: [ConversationParticipantService, ConversationParticipantLogic],
-  exports: [],
+  exports: [ConversationParticipantService, ConversationParticipantLogic],
 })
 export class ConversationParticipantModule {}

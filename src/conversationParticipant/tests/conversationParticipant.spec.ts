@@ -15,7 +15,7 @@ import {
   ConversationParticipantServiceDefinition,
   ConversationServiceClient,
   ConversationServiceDefinition,
-} from '@appstack-io/client';
+} from '../../tests/combined.client';
 import { MainMicroservicesModule } from './components/main.microservices.module';
 import { MainHttpModule } from './components/main.http.module';
 

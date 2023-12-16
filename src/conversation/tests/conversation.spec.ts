@@ -4,7 +4,7 @@ import {
   ConversationParticipantServiceDefinition,
   ConversationServiceClient,
   ConversationServiceDefinition,
-} from '@appstack-io/client';
+} from '../../tests/combined.client';
 import { shutdownComponents } from '@appstack-io/main';
 import { v4 as uuid } from 'uuid';
 import {

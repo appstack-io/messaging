@@ -1,45 +1,33 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { MqService } from '@appstack-io/mq';
 import { Job } from 'bullmq';
 import { WorkerJobData } from '@appstack-io/workers';
-import {
-  ClientService,
-  ConversationParticipantServiceClient,
-  ConversationParticipantServiceDefinition,
-  MessageJobPayload,
-  MessageServiceClient,
-  MessageServiceDefinition,
-} from '@appstack-io/client';
+import { MessageJobPayload } from '../../combined';
 import { PubsubService } from '@appstack-io/pubsub';
+import { MessageService } from '../message.service';
+import { ConversationParticipantService } from '../../conversationParticipant/conversationParticipant.service';
 
 export type MessageJobData = WorkerJobData<MessageJobPayload>;
 
 @Injectable()
 export class MessageWorkerService implements OnModuleInit {
-  private messageServiceClient: MessageServiceClient;
-  private conversationParticipantServiceClient: ConversationParticipantServiceClient;
-
+  private logger: Logger = new Logger(MessageWorkerService.name);
   constructor(
     private mq: MqService,
-    private clientService: ClientService,
     private pubsub: PubsubService,
-  ) {
-    this.messageServiceClient =
-      this.clientService.getServiceInternalClient<MessageServiceClient>(
-        MessageServiceDefinition,
-      );
-
-    this.conversationParticipantServiceClient =
-      this.clientService.getServiceInternalClient<ConversationParticipantServiceClient>(
-        ConversationParticipantServiceDefinition,
-      );
-  }
+    private messageService: MessageService,
+    private conversationParticipantService: ConversationParticipantService,
+  ) {}
 
   async onJob(messageJobData: MessageJobData): Promise<void> {
     const { data } = messageJobData;
-    const message = await this.messageServiceClient.findOne({ id: data.id });
+    const message = await this.messageService.findOne({ id: data.id });
+    if (!message) {
+      this.logger.warn(`message ${data.id} not found`);
+      return;
+    }
     const participants =
-      await this.conversationParticipantServiceClient.findByConversation({
+      await this.conversationParticipantService.findByConversation({
         filter: { conversationId: message.conversationId },
         opts: { limit: 99999, offset: 0 },
       });

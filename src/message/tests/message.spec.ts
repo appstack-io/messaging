@@ -7,7 +7,7 @@ import {
   ConversationServiceDefinition,
   MessageServiceClient,
   MessageServiceDefinition,
-} from '@appstack-io/client';
+} from '../../tests/combined.client';
 import { shutdownComponents } from '@appstack-io/main';
 import { v4 as uuid } from 'uuid';
 import {
@@ -256,7 +256,7 @@ describe('Message', () => {
 
     // Act
     const created = await client.createOne(input, { metadata });
-    await sleep(10);
+    await sleep(100);
 
     // Assert
     expect(published.id).toEqual(created.id);
@@ -311,13 +311,13 @@ describe('Message', () => {
     );
 
     // Assert
+    await sleep(100);
     const updatedConversation = await conversationClient.findOne(
       { id: conversation.id },
       { metadata },
     );
     expect(updatedConversation.lastMessageAt).toEqual(updated.updatedAt);
 
-    await sleep(10);
     expect(published.id).toEqual(updated.id);
     expect(published.media.text).toEqual(updated.media.text);
   });

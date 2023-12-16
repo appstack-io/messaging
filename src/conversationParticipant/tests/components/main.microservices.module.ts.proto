@@ -2,192 +2,6 @@ syntax = "proto3";
 import "google/protobuf/empty.proto";
 package main;
 
-message Permission {
-  string id = 1;
-  uint64 createdAt = 2;
-  uint64 updatedAt = 3;
-  string entity = 4;
-  string entityId = 5;
-  string permittedEntity = 6;
-  string permittedEntityId = 7;
-  string action = 8;
-}
-
-message AuthorizableAs {
-  string entity = 1;
-  string entityId = 2;
-}
-
-message Permissions {
-  repeated Permission permissions = 1;
-}
-
-message PermissionCreateOneInput {
-  string entity = 4;
-  string entityId = 5;
-  string permittedEntity = 6;
-  string permittedEntityId = 7;
-  string action = 8;
-}
-
-message PermissionCreateManyInput {
-  string entity = 4;
-  string entityId = 5;
-  string permittedEntity = 6;
-  repeated string permittedEntityIds = 7;
-  string action = 8;
-}
-
-message PermissionFindOneInput {
-  string id = 1;
-}
-
-message PermissionFindWhereInput {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  string permittedEntityId = 4;
-  string action = 5;
-}
-
-message PermissionFindWhereManyInput {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  repeated string permittedEntityIds = 4;
-  string action = 5;
-}
-
-message PermissionFindWhereOrStarInput {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  string permittedEntityId = 4;
-  string action = 5;
-}
-
-message Permitted {
-  string permittedEntity = 1;
-  string permittedEntityId = 2;
-}
-
-message PermissionValidateOneInput {
-  string entity = 1;
-  string entityId = 2;
-  string action = 3;
-  repeated Permitted permitted = 4;
-}
-
-message PermissionValidateOneResult {
-  bool validated = 1;
-}
-
-message PermissionRemoveOneInput {
-  string id = 1;
-}
-
-message PermissionRemoveWhereInput {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  string permittedEntityId = 4;
-  string action = 5;
-}
-
-message PermissionRemoveWhereManyInput {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  repeated string permittedEntityIds = 4;
-  string action = 5;
-}
-
-message PermissionFindByPermittedFilter {
-  string permittedEntity = 6;
-  string permittedEntityId = 7;
-}
-
-message PermissionFindByPermittedOpts {
-  uint64 limit = 1;
-  uint64 offset = 2;
-}
-
-message PermissionFindByPermittedInput {
-  PermissionFindByPermittedFilter filter = 1;
-  PermissionFindByPermittedOpts opts = 2;
-}
-
-message PermissionFindByPermittedResultMeta {
-  uint64 offset = 1;
-}
-
-message PermissionFindByPermittedResult {
-  PermissionFindByPermittedResultMeta meta = 1;
-  repeated Permission results = 2;
-}
-
-message PermissionFindByEntityFilter {
-  string entity = 6;
-  string entityId = 7;
-  string action = 8;
-}
-
-message PermissionFindByEntityOpts {
-  uint64 limit = 1;
-  uint64 offset = 2;
-}
-
-message PermissionFindByEntityInput {
-  PermissionFindByEntityFilter filter = 1;
-  PermissionFindByEntityOpts opts = 2;
-}
-
-message PermissionFindByEntityResultMeta {
-  uint64 offset = 1;
-}
-
-message PermissionFindByEntityResult {
-  PermissionFindByEntityResultMeta meta = 1;
-  repeated Permission results = 2;
-}
-
-message PermissionFindAllActionsFilter {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  string permittedEntityId = 4;
-}
-
-message PermissionFindAllActionsOpts {
-  uint64 limit = 1;
-  uint64 offset = 2;
-}
-
-message PermissionFindAllActionsInput {
-  PermissionFindAllActionsFilter filter = 1;
-  PermissionFindAllActionsOpts opts = 2;
-}
-
-message PermissionFindAllActionsResultMeta {
-  uint64 offset = 1;
-}
-
-message PermissionFindAllActionsResult {
-  PermissionFindAllActionsResultMeta meta = 1;
-  repeated Permission results = 2;
-}
-
-message PermissionRemoveAllActionsFilter {
-  string entity = 1;
-  string entityId = 2;
-  string permittedEntity = 3;
-  string permittedEntityId = 4;
-}
-
-message PermissionRemoveAllActionsInput {
-  PermissionRemoveAllActionsFilter filter = 1;
-}
-
 message Login {
   string id = 1;
   uint64 createdAt = 2;
@@ -411,6 +225,11 @@ message ConversationParticipantFindByConversationResult {
   repeated ConversationParticipant results = 2;
 }
 
+message AuthorizableAs {
+  string entity = 1;
+  string entityId = 2;
+}
+
 message Message {
     string id = 1;
     uint64 createdAt = 2;
@@ -478,23 +297,6 @@ message MessageFindByConversationResult {
 
 message MessageJobPayload {
   string id = 1;
-}
-
-service PermissionService {
-  rpc CreateOne (PermissionCreateOneInput) returns (Permission) {}
-  rpc CreateMany (PermissionCreateManyInput) returns (Permissions) {}
-  rpc FindOne (PermissionFindOneInput) returns (Permission) {}
-  rpc FindWhere (PermissionFindWhereInput) returns (Permission) {}
-  rpc FindWhereMany (PermissionFindWhereManyInput) returns (Permissions) {}
-  rpc FindWhereOrStar (PermissionFindWhereOrStarInput) returns (Permission) {}
-  rpc FindByPermitted (PermissionFindByPermittedInput) returns (PermissionFindByPermittedResult) {}
-  rpc FindByEntity (PermissionFindByEntityInput) returns (PermissionFindByEntityResult) {}
-  rpc FindAllActions (PermissionFindAllActionsInput) returns (PermissionFindAllActionsResult) {}
-  rpc ValidateOne (PermissionValidateOneInput) returns (PermissionValidateOneResult) {}
-  rpc RemoveOne (PermissionRemoveOneInput) returns (google.protobuf.Empty) {}
-  rpc RemoveWhere (PermissionRemoveWhereInput) returns (google.protobuf.Empty) {}
-  rpc RemoveWhereMany (PermissionRemoveWhereManyInput) returns (google.protobuf.Empty) {}
-  rpc RemoveAllActions (PermissionRemoveAllActionsInput) returns (google.protobuf.Empty) {}
 }
 
 service LoginService {
