@@ -7,5 +7,6 @@ import { protoBuild } from '@appstack-io/proto';
     exclude: ['/tests/', 'combined'],
     combinedName: 'combined',
     clientDir: 'client',
+    hostMappings: {},
   });
 })();
